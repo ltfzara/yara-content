@@ -6,20 +6,22 @@ Persian-first, RTL Instagram content strategist for Persian-speaking small busin
 - Supabase email OTP login and user-owned business profile/drafts
 - Persian chat UI with persisted chat history
 - Authenticated Supabase Edge Function at `supabase/functions/yara-chat/index.ts`
-- Gemini API calls happen server-side; the Gemini key is never placed in browser code
+- AvalAI API calls happen server-side; the AvalAI key is never placed in browser code
 
 ## Deploy the AI function
-1. In Google AI Studio, create an API key for a project that remains on the **Gemini API Free tier**: https://aistudio.google.com/app/apikey
+1. Create an API key in your AvalAI dashboard.
 2. In Supabase, open **Edge Functions** and create a function named `yara-chat` using the code in `supabase/functions/yara-chat/index.ts`. Deploy it.
-3. In Supabase **Project Settings → Edge Functions → Secrets** (or the Functions secrets area), add `GEMINI_API_KEY` with your AI Studio key. Do not add it to `index.html` or GitHub.
-4. Confirm the Supabase Edge Function is deployed, then refresh the Vercel site and try the **گفت‌وگو با یارا** tab.
+3. In Supabase **Edge Function Secrets**, add `AVALAI_API_KEY` with your AvalAI key. Do not add it to `index.html` or GitHub.
+4. The function defaults to model `gpt-4.1-mini`. To use a different model available to your account, optionally set `AVALAI_MODEL` as an Edge Function secret.
+5. Confirm the Supabase Edge Function is deployed, then refresh the Vercel site and try the **گفت‌وگو با یارا** tab.
 
-The function checks the caller's Supabase access token before using Gemini. Supabase's default Edge Function JWT verification should remain enabled.
+The function checks the caller's Supabase access token before using AvalAI. Supabase's default Edge Function JWT verification should remain enabled. The key is sent only from the server-side function to AvalAI.
 
-## Free-tier and privacy notes
-- Gemini API has a free tier with limited model availability and rate limits. Availability and quotas can change; check the project's active limits in AI Studio.
-- Google's published free-tier pricing page says content submitted on the free tier may be used to improve its products. Do not send sensitive customer data, passwords, payment details, or confidential business information through the free-tier model.
-- If the free quota is exhausted, Yara should show an error rather than silently switch to a paid model. Do not link billing or upgrade the project unless the owner explicitly chooses to.
+## Free-tier, credits, and privacy notes
+- AvalAI model availability, prices, trial credits, and request limits depend on the account and can change. Check the dashboard before making repeated requests.
+- Do not assume the trial credit is unlimited or enable paid top-ups unless you explicitly choose to.
+- Do not send passwords, payment details, sensitive customer data, or confidential business information to an AI provider unless you have reviewed its data handling terms.
+- If the account has no available credit or reaches a limit, Yara should show an error rather than silently switching to a paid model.
 - Supabase and Vercel free plans also have their own limits and terms.
 
 ## Database
