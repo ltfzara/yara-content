@@ -53,7 +53,18 @@ Deno.serve(async (req) => {
     const message = String(body.message ?? "").trim().slice(0, 6000);
     if (!message) return json({ error: "پیامت خالی است." }, 400);
 
-    const profile = body.profile && typeof body.profile === "object" ? body.profile : {};
+    // Always load the latest saved business profile from Supabase.
+    // The authenticated user's RLS policies scope this query to their own data.
+    const { data: savedProfile, error: profileError } = await supabase
+      .from("business_profiles")
+      .select("*")
+      .eq("user_id", userData.user.id)
+      .maybeSingle();
+    if (profileError) {
+      console.error("Business profile lookup failed", profileError);
+      return json({ error: "دریافت پروفایل کسب‌وکار ناموفق بود؛ دوباره تلاش کن." }, 500);
+    }
+    const profile = savedProfile ?? {};
     const history = Array.isArray(body.history) ? body.history.slice(-10) : [];
     const profileText = Object.entries(profile)
       .filter(([, value]) => typeof value === "string" && value.trim())
