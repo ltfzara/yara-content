@@ -174,9 +174,11 @@ function addChatBubble(role, content){
 }
 async function loadChatHistory(){
  if(!currentUser)return;
- const {data,error}=await client.from('chat_messages').select('role,content').eq('user_id',currentUser.id).order('created_at',{ascending:true}).limit(40);
+ // Fetch the newest 40 messages, then reverse them for chronological display.
+ // Ordering ascending before limit(40) incorrectly showed the very first conversation.
+ const {data,error}=await client.from('chat_messages').select('role,content').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(40);
  if(error){console.error(error);return}
- $('chat-history').innerHTML='';(data||[]).forEach(m=>{if(m.role!=='system')addChatBubble(m.role,m.content)});
+ $('chat-history').innerHTML='';(data||[]).reverse().forEach(m=>{if(m.role!=='system')addChatBubble(m.role,m.content)});
 }
 async function sendChat(){
  const message=$('chat-input').value.trim();if(!message)return;
