@@ -74,6 +74,11 @@ textarea{min-height:94px;resize:vertical}
 .bubble-label{display:block;margin-bottom:5px;font-size:11px;color:var(--green);font-weight:800}
 .bubble-actions{display:flex;gap:9px;margin-top:11px;align-items:center}
 .bubble-actions button{padding:5px 10px;font-size:11px;border-radius:8px}
+.profile-progress{margin:18px 0 22px;padding:16px 18px;background:#f6f8f5;border:1px solid var(--line);border-radius:13px}
+.profile-progress-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px;font-size:12px;font-weight:700}
+.progress-track{height:7px;border-radius:10px;background:#e5ebe5;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--green);border-radius:10px;transition:width .2s}
+.profile-hint{margin:9px 0 0;color:var(--muted);font-size:11px}
 .chat-compose{padding:18px 25px 22px;border-top:1px solid var(--line);background:#fff}
 .chat-compose .field{margin:0 0 11px}
 .chat-compose textarea{min-height:82px;border-color:#dce4dd;background:#fbfcfb}
@@ -120,6 +125,7 @@ textarea{min-height:94px;resize:vertical}
 <div class="row"><button id="chat-send">ارسال پیام</button><button class="secondary" id="chat-clear" type="button">پاک‌کردن نمایش گفتگو</button></div><p id="chat-msg" class="feedback"></p></div>
 </div></section>
 <section id="page-profile" class="page hidden"><div class="card"><h2>پروفایل کسب‌وکار</h2><p class="muted">هرچه یارا شناخت دقیق‌تری از کسب‌وکارت داشته باشه، پیشنهادهای مرتبط‌تری می‌تونه آماده کنه.</p>
+<div class="profile-progress"><div class="profile-progress-top"><span>تکمیل شناخت کسب‌وکار</span><span id="profile-progress-label">۰٪ تکمیل شده</span></div><div class="progress-track"><div class="progress-fill" id="profile-progress-fill"></div></div><p class="profile-hint" id="profile-progress-hint">با چند پاسخ کوتاه، پیشنهادهای یارا دقیق‌تر و متناسب‌تر می‌شن.</p></div>
 <div class="field"><label>نام کسب‌وکار یا پیج</label><input id="p-name"></div><div class="field"><label>آیدی اینستاگرام</label><input id="p-handle" placeholder="@yourpage"></div><div class="field"><label>حوزه فعالیت</label><input id="p-type" placeholder="مثلاً پوشاک، آموزش، زیبایی"></div><div class="field"><label>محصولات یا خدمات</label><textarea id="p-products"></textarea></div><div class="field"><label>مخاطب هدف</label><textarea id="p-audience"></textarea></div><div class="field"><label>مخاطبت دوست داره به چه نتیجه‌ای برسه؟</label><textarea id="p-result"></textarea></div><div class="field"><label>چه چیزی تو رو متفاوت می‌کنه؟</label><textarea id="p-diff"></textarea></div><div class="field"><label>هدف اصلی محتوا</label><select id="p-goal"><option value="">انتخاب کن</option><option>افزایش فالوور</option><option>دریافت دایرکت</option><option>فروش</option><option>رزرو یا ثبت‌نام</option><option>اعتمادسازی و تعامل</option></select></div><div class="field"><label>لحن برند</label><input id="p-voice" placeholder="مثلاً صمیمی، حرفه‌ای، شوخ و خودمانی"></div><button id="save-profile">ذخیره پروفایل</button><p id="profile-msg"></p></div></section>
 <section id="page-drafts" class="page hidden"><div class="card"><h2>پیش‌نویس‌های من</h2><p class="muted">ایده‌ها و متن‌هایی که ذخیره کرده‌ای.</p><div id="draft-list"></div></div></section>
 </main><p class="footer">یارا · دستیار خلاق اینستاگرامت</p></div>
@@ -135,9 +141,20 @@ document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',(
 async function boot(session){currentUser=session?.user||null;$('auth').classList.toggle('hidden',!!currentUser);$('app').classList.toggle('hidden',!currentUser);$('logout').classList.toggle('hidden',!currentUser);if(currentUser){await loadProfile();await loadDrafts();showPage('chat')}}
 $('send-link').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('auth-msg','ایمیلت رو وارد کن.');return}const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin}});msg('auth-msg',error?error.message:'لینک ورود ارسال شد. ایمیلت رو بررسی کن.')};
 $('logout').onclick=async()=>{await client.auth.signOut();location.reload()};
-async function loadProfile(){const {data,error}=await client.from('business_profiles').select('*').eq('user_id',currentUser.id).maybeSingle();if(error){console.error(error);return}if(!data)return;profileId=data.id;const map={'p-name':'business_name','p-handle':'instagram_handle','p-type':'business_type','p-products':'products_services','p-audience':'target_audience','p-result':'audience_desired_result','p-diff':'business_differentiator','p-goal':'content_goal','p-voice':'brand_voice'};for(const [el,key] of Object.entries(map))$(el).value=data[key]||'';$('quick-business').value=data.products_services||'';$('quick-audience').value=data.target_audience||''}
+async function loadProfile(){const {data,error}=await client.from('business_profiles').select('*').eq('user_id',currentUser.id).maybeSingle();if(error){console.error(error);return}if(!data)return;profileId=data.id;const map={'p-name':'business_name','p-handle':'instagram_handle','p-type':'business_type','p-products':'products_services','p-audience':'target_audience','p-result':'audience_desired_result','p-diff':'business_differentiator','p-goal':'content_goal','p-voice':'brand_voice'};for(const [el,key] of Object.entries(map))$(el).value=data[key]||'';updateProfileProgress();$('quick-business').value=data.products_services||'';$('quick-audience').value=data.target_audience||''}
+function updateProfileProgress(){
+ const fields=['p-products','p-audience','p-result','p-diff','p-goal','p-voice'];
+ const complete=fields.filter(id=>$(id).value.trim()).length;
+ const percent=Math.round(complete/fields.length*100);
+ const digits=n=>String(n).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
+ if($('profile-progress-label'))$('profile-progress-label').textContent=digits(percent)+'٪ تکمیل شده';
+ if($('profile-progress-fill'))$('profile-progress-fill').style.width=percent+'%';
+ if($('profile-progress-hint'))$('profile-progress-hint').textContent=percent===100?'عالیه! یارا اطلاعات اصلی کسب‌وکارت رو داره.': 'فقط '+digits(fields.length-complete)+' بخش دیگه مونده تا یارا شناخت بهتری از کسب‌وکارت داشته باشه.';
+}
+document.querySelectorAll('#page-profile input,#page-profile textarea,#page-profile select').forEach(el=>el.addEventListener('input',updateProfileProgress));
+document.querySelectorAll('#page-profile select').forEach(el=>el.addEventListener('change',updateProfileProgress));
 function profilePayload(){return {user_id:currentUser.id,business_name:$('p-name').value.trim(),instagram_handle:$('p-handle').value.trim(),business_type:$('p-type').value.trim(),products_services:$('p-products').value.trim(),target_audience:$('p-audience').value.trim(),audience_desired_result:$('p-result').value.trim(),business_differentiator:$('p-diff').value.trim(),content_goal:$('p-goal').value,brand_voice:$('p-voice').value.trim(),onboarding_completed:true,updated_at:new Date().toISOString()}}
-async function saveProfile(){const payload=profilePayload();const {data,error}=await client.from('business_profiles').upsert(payload,{onConflict:'user_id'}).select().single();if(error){msg('profile-msg','خطا در ذخیره: '+error.message);return}profileId=data.id;msg('profile-msg','پروفایل کسب‌وکارت ذخیره شد ✓')}
+async function saveProfile(){const payload=profilePayload();const {data,error}=await client.from('business_profiles').upsert(payload,{onConflict:'user_id'}).select().single();if(error){msg('profile-msg','خطا در ذخیره: '+error.message);return}profileId=data.id;updateProfileProgress();msg('profile-msg','پروفایل کسب‌وکارت ذخیره شد ✓')}
 $('save-profile').onclick=saveProfile;
 $('quick-save').onclick=async()=>{$('p-products').value=$('quick-business').value;$('p-audience').value=$('quick-audience').value;await saveProfile();if(!$('profile-msg').textContent.startsWith('خطا'))showPage('profile')};
 // Drafts are saved directly from Yara's assistant replies in the chat.
