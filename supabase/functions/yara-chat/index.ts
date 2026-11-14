@@ -60,18 +60,8 @@ Deno.serve(async (req) => {
       .map(([key, value]) => `${key}: ${String(value).slice(0, 1200)}`)
       .join("\n");
 
-    const contents = [
-      { role: "user", parts: [{ text: "زمینه کسب‌وکار کاربر:\n" + (profileText || "هنوز پروفایل تکمیل نشده است.") }] },
-      ...history.filter((item: any) => ["user", "assistant"].includes(item?.role) && typeof item?.content === "string")
-        .map((item: any) => ({
-          role: item.role === "assistant" ? "model" : "user",
-          parts: [{ text: item.content.slice(0, 5000) }],
-        })),
-    ];
-    contents.push({ role: "user", parts: [{ text: message }] });
-
     const messages = [
-      { role: "system", content: SYSTEM + "\\n\\nزمینه کسب‌وکار کاربر:\\n" + (profileText || "هنوز پروفایل تکمیل نشده است.") },
+      { role: "system", content: SYSTEM + "\n\nزمینه کسب‌وکار کاربر:\n" + (profileText || "هنوز پروفایل تکمیل نشده است.") },
       ...history.filter((item: any) => ["user", "assistant"].includes(item?.role) && typeof item?.content === "string")
         .map((item: any) => ({ role: item.role, content: item.content.slice(0, 5000) })),
       { role: "user", content: message },
