@@ -67,7 +67,7 @@ async function sendChat(){
  if(saveUserError){$('chat-msg').className='feedback error';$('chat-msg').textContent='پیام ارسال نشد: '+saveUserError.message;$('chat-send').disabled=false;return}
  const {data:history}=await client.from('chat_messages').select('role,content').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(12);
  const profile={business_name:$('p-name').value,business_type:$('p-type').value,products_services:$('p-products').value,target_audience:$('p-audience').value,audience_desired_result:$('p-result').value,business_differentiator:$('p-diff').value,content_goal:$('p-goal').value,brand_voice:$('p-voice').value};
- const {data,error}=await client.functions.invoke('yara-chat',{body:{message,history:(history||[]).reverse(),profile}});
+ const {data,error}=await client.functions.invoke('yara-chat',{body:{message,history:(history||[]).reverse().slice(0,-1),profile}});
  if(error){$('chat-msg').className='feedback error';$('chat-msg').textContent='موتور هوش مصنوعی هنوز تنظیم نشده: '+(error.message||'');$('chat-send').disabled=false;return}
  const answer=data?.reply||'پاسخی دریافت نشد.';addChatBubble('assistant',answer);
  const {error:saveAssistantError}=await client.from('chat_messages').insert({user_id:currentUser.id,profile_id:profileId,role:'assistant',content:answer});
