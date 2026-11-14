@@ -1,6 +1,6 @@
 // Supabase Edge Function: yara-chat
 // Deploy with: supabase functions deploy yara-chat
-// Set secret: supabase secrets set GEMINI_API_KEY=your_key
+// Set secret: AVALAI_API_KEY (in Supabase Edge Function Secrets)
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const cors = {
@@ -46,8 +46,8 @@ Deno.serve(async (req) => {
     const { data: userData, error: authError } = await supabase.auth.getUser(token);
     if (authError || !userData.user) return json({ error: "نشست معتبر نیست؛ دوباره وارد شو." }, 401);
 
-    const apiKey = Deno.env.get("GEMINI_API_KEY");
-    if (!apiKey) return json({ error: "کلید Gemini هنوز در Secrets تابع تنظیم نشده است." }, 503);
+    const apiKey = Deno.env.get("AVALAI_API_KEY");
+    if (!apiKey) return json({ error: "کلید AvalAI هنوز در Secrets تابع تنظیم نشده است." }, 503);
 
     const body = await req.json();
     const message = String(body.message ?? "").trim().slice(0, 6000);
@@ -70,24 +70,36 @@ Deno.serve(async (req) => {
     ];
     contents.push({ role: "user", parts: [{ text: message }] });
 
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
+    const messages = [
+      { role: "system", content: SYSTEM + "\\n\\nزمینه کسب‌وکار کاربر:\\n" + (profileText || "هنوز پروفایل تکمیل نشده است.") },
+      ...history.filter((item: any) => ["user", "assistant"].includes(item?.role) && typeof item?.content === "string")
+        .map((item: any) => ({ role: item.role, content: item.content.slice(0, 5000) })),
+      { role: "user", content: message },
+    ];
+
+    // AvalAI offers an OpenAI-compatible Chat Completions API. Use its
+    // Cloudflare-backed endpoint for deployments outside Iran.
+    const response = await fetch("https://api.avalai.org/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM }] },
-        contents,
-        generationConfig: { temperature: 0.8, maxOutputTokens: 1800 },
+        model: Deno.env.get("AVALAI_MODEL") || "gpt-4.1-mini",
+        messages,
+        temperature: 0.8,
+        max_tokens: 1800,
       }),
     });
 
     const result = await response.json();
     if (!response.ok) {
-      console.error("Gemini API error", response.status, result);
+      console.error("AvalAI API error", response.status, result?.error?.message ?? result?.message ?? "No provider message");
       return json({ error: response.status === 429
-        ? "سهمیه رایگان فعلاً پر شده؛ کمی بعد دوباره امتحان کن."
-        : "ارتباط با سرویس هوش مصنوعی ناموفق بود. تنظیمات کلید و مدل را بررسی کن." }, 502);
+        ? "محدودیت یا سهمیه درخواست‌های AvalAI فعلاً پر شده؛ اعتبار و محدودیت مدل را بررسی کن و کمی بعد دوباره امتحان کن."
+        : response.status === 401 || response.status === 403
+          ? "کلید AvalAI معتبر نیست یا دسترسی لازم را ندارد؛ مقدار Secret را بررسی کن."
+          : "ارتباط با سرویس هوش مصنوعی ناموفق بود. نام مدل و تنظیمات AvalAI را بررسی کن." }, 502);
     }
-    const reply = result?.candidates?.[0]?.content?.parts?.map((p: any) => p.text ?? "").join("").trim();
+    const reply = result?.choices?.[0]?.message?.content?.trim?.();
     if (!reply) return json({ error: "مدل پاسخی برنگرداند؛ دوباره تلاش کن." }, 502);
     return json({ reply });
   } catch (error) {
