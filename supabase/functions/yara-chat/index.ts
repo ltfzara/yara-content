@@ -36,7 +36,8 @@ Deno.serve(async (req) => {
     if (!authHeader.startsWith("Bearer ")) return json({ error: "ابتدا وارد حساب کاربری شو." }, 401);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const anonKey = req.headers.get("apikey") ?? Deno.env.get("SUPABASE_ANON_KEY");
+    if (!anonKey) return json({ error: "کلید عمومی Supabase در درخواست موجود نیست." }, 401);
     const supabase = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
       auth: { persistSession: false },
