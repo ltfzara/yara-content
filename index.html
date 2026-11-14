@@ -11,7 +11,7 @@
 </style></head>
 <body>
 <div class="shell">
-<header class="top"><div class="brand"><div class="logo">ی</div><div><h1>یارا</h1><p>دستیار خلاق اینستاگرامت</p></div></div><nav class="nav" id="nav"><button class="active" data-page="home">خانه</button><button data-page="profile">پروفایل کسب‌وکار</button><button data-page="drafts">پیش‌نویس‌ها</button><button id="logout" class="hidden">خروج</button></nav></header>
+<header class="top"><div class="brand"><div class="logo">ی</div><div><h1>یارا</h1><p>دستیار خلاق اینستاگرامت</p></div></div><nav class="nav" id="nav"><button class="active" data-page="home">خانه</button><button data-page="chat">گفت‌وگو با یارا</button><button data-page="profile">پروفایل کسب‌وکار</button><button data-page="drafts">پیش‌نویس‌ها</button><button id="logout" class="hidden">خروج</button></nav></header>
 <section id="auth" class="card"><span class="eyebrow">شروع با یارا</span><h2>با ایمیلت وارد شو</h2><p class="muted">یک لینک ورود یک‌بارمصرف برایت ایمیل می‌کنیم. نیازی به رمز عبور نیست.</p><div class="field"><label>ایمیل</label><input id="email" type="email" placeholder="you@example.com" autocomplete="email"></div><button id="send-link">ارسال لینک ورود</button><p id="auth-msg" class="muted"></p></section>
 <main id="app" class="hidden">
 <section id="page-home" class="page">
@@ -19,6 +19,12 @@
 <div class="card"><div class="section-title"><h3>شروع شناخت کسب‌وکار</h3><span class="small">مرحله ۱ از ۵</span></div><p class="muted">فعلاً چند سؤال کوتاه جواب بده. اطلاعاتت در پروفایل شخصی خودت ذخیره می‌شه.</p><div class="field"><label>چه محصول یا خدمتی ارائه می‌کنی؟</label><input id="quick-business" placeholder="مثلاً زیورآلات دست‌ساز"></div><div class="field"><label>مشتری ایده‌آلت چه کسیه؟</label><input id="quick-audience" placeholder="مثلاً خانم‌های ۲۰ تا ۳۵ سال"></div><button id="quick-save">ذخیره و ادامه</button><p id="quick-msg"></p></div></div>
 <div class="card" style="margin-top:18px"><div class="section-title"><h3>یک پیش‌نویس جدید</h3><span class="small">ذخیره در فضای شخصی تو</span></div><div class="field"><label>عنوان</label><input id="draft-title" placeholder="مثلاً معرفی محصول جدید"></div><div class="field"><label>ایده یا متن محتوا</label><textarea id="draft-body" placeholder="ایده‌ات رو اینجا بنویس..."></textarea></div><div class="row"><div class="field"><label>نوع محتوا</label><select id="draft-type"><option value="idea">ایده</option><option value="reel_script">سناریوی ریلز</option><option value="caption">کپشن</option><option value="story">استوری</option><option value="carousel">کاروسل</option></select></div><div class="field"><label>هدف</label><select id="draft-goal"><option>تعامل</option><option>افزایش فالوور</option><option>دریافت دایرکت</option><option>فروش</option><option>رزرو یا ثبت‌نام</option></select></div></div><button id="save-draft">ذخیره پیش‌نویس</button><p id="draft-msg"></p></div>
 </section>
+<section id="page-chat" class="page hidden">
+<div class="card"><span class="eyebrow">استراتژیست محتوای تو</span><h2>با یارا درباره کسب‌وکارت حرف بزن</h2><p class="muted">اول شناخت کسب‌وکار و مخاطبت؛ بعد ایده، هوک، سناریوی ریلز، کپشن و دعوت به اقدام. اگر اطلاعات کافی نباشه، یارا سؤال می‌پرسه.</p>
+<div id="chat-history" style="display:grid;gap:12px;margin:18px 0"></div>
+<div class="field"><label for="chat-input">پیامت به یارا</label><textarea id="chat-input" placeholder="مثلاً من زیورآلات دست‌ساز می‌فروشم، برای معرفی کالکشن جدیدم ایده ریلز می‌خوام..."></textarea></div>
+<div class="row"><button id="chat-send">ارسال به یارا</button><button class="secondary" id="chat-clear" type="button">پاک کردن نمایش گفتگو</button></div><p id="chat-msg" class="feedback"></p>
+</div></section>
 <section id="page-profile" class="page hidden"><div class="card"><h2>پروفایل کسب‌وکار</h2><p class="muted">هرچه یارا شناخت دقیق‌تری از کسب‌وکارت داشته باشه، پیشنهادهای مرتبط‌تری می‌تونه آماده کنه.</p>
 <div class="field"><label>نام کسب‌وکار یا پیج</label><input id="p-name"></div><div class="field"><label>آیدی اینستاگرام</label><input id="p-handle" placeholder="@yourpage"></div><div class="field"><label>حوزه فعالیت</label><input id="p-type" placeholder="مثلاً پوشاک، آموزش، زیبایی"></div><div class="field"><label>محصولات یا خدمات</label><textarea id="p-products"></textarea></div><div class="field"><label>مخاطب هدف</label><textarea id="p-audience"></textarea></div><div class="field"><label>مخاطبت دوست داره به چه نتیجه‌ای برسه؟</label><textarea id="p-result"></textarea></div><div class="field"><label>چه چیزی تو رو متفاوت می‌کنه؟</label><textarea id="p-diff"></textarea></div><div class="field"><label>هدف اصلی محتوا</label><select id="p-goal"><option value="">انتخاب کن</option><option>افزایش فالوور</option><option>دریافت دایرکت</option><option>فروش</option><option>رزرو یا ثبت‌نام</option><option>اعتمادسازی و تعامل</option></select></div><div class="field"><label>لحن برند</label><input id="p-voice" placeholder="مثلاً صمیمی، حرفه‌ای، شوخ و خودمانی"></div><button id="save-profile">ذخیره پروفایل</button><p id="profile-msg"></p></div></section>
 <section id="page-drafts" class="page hidden"><div class="card"><h2>پیش‌نویس‌های من</h2><p class="muted">ایده‌ها و متن‌هایی که ذخیره کرده‌ای.</p><div id="draft-list"></div></div></section>
@@ -30,7 +36,7 @@ const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let currentUser=null, profileId=null;
 const $=id=>document.getElementById(id);
 function msg(id,t){const el=$(id);el.textContent=t;el.classList.add('feedback');el.classList.remove('success','error','info');el.classList.add(t.startsWith('خطا')?'error':(t.includes('✓')?'success':'info'))}
-function showPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='drafts')loadDrafts()}
+function showPage(page){document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='drafts')loadDrafts();if(page==='chat')loadChatHistory()}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 async function boot(session){currentUser=session?.user||null;$('auth').classList.toggle('hidden',!!currentUser);$('app').classList.toggle('hidden',!currentUser);$('logout').classList.toggle('hidden',!currentUser);if(currentUser){await loadProfile();await loadDrafts()}}
 $('send-link').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('auth-msg','ایمیلت رو وارد کن.');return}const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin}});msg('auth-msg',error?error.message:'لینک ورود ارسال شد. ایمیلت رو بررسی کن.')};
@@ -42,6 +48,35 @@ $('save-profile').onclick=saveProfile;
 $('quick-save').onclick=async()=>{$('p-products').value=$('quick-business').value;$('p-audience').value=$('quick-audience').value;await saveProfile();if(!$('profile-msg').textContent.startsWith('خطا'))showPage('profile')};
 $('save-draft').onclick=async()=>{const title=$('draft-title').value.trim()||'پیش‌نویس بدون عنوان',body=$('draft-body').value.trim();if(!body){msg('draft-msg','متن یا ایده رو وارد کن.');return}const {error}=await client.from('content_drafts').insert({user_id:currentUser.id,profile_id:profileId,title,content_type:$('draft-type').value,objective:$('draft-goal').value,body});msg('draft-msg',error?'خطا در ذخیره: '+error.message:'پیش‌نویس ذخیره شد ✓');if(!error){$('draft-title').value='';$('draft-body').value='';loadDrafts()}};
 async function loadDrafts(){if(!currentUser)return;const {data,error}=await client.from('content_drafts').select('id,title,content_type,body,objective,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false});if(error){$('draft-list').textContent='خطا در دریافت: '+error.message;return}$('draft-list').innerHTML='';if(!data.length){$('draft-list').textContent='هنوز پیش‌نویسی ذخیره نکردی.';return}for(const d of data){const el=document.createElement('article');el.className='draft';const h=document.createElement('h4');h.textContent=d.title;const p=document.createElement('p');p.textContent=d.body||'';const s=document.createElement('span');s.className='small';s.textContent=(d.objective||'')+' · '+new Date(d.created_at).toLocaleDateString('fa-IR');el.append(h,p,s);$('draft-list').append(el)}}
+
+function addChatBubble(role, content){
+ const wrap=document.createElement('div');wrap.style.cssText='padding:14px 16px;border-radius:16px;max-width:94%;white-space:pre-wrap;line-height:2;background:'+(role==='user'?'#edf3ed':'#f5eee5')+';justify-self:'+(role==='user'?'start':'end');
+ const tag=document.createElement('strong');tag.textContent=role==='user'?'تو':'یارا';tag.style.display='block';tag.style.marginBottom='5px';wrap.append(tag,document.createTextNode(content));$('chat-history').append(wrap);
+}
+async function loadChatHistory(){
+ if(!currentUser)return;
+ const {data,error}=await client.from('chat_messages').select('role,content').eq('user_id',currentUser.id).order('created_at',{ascending:true}).limit(40);
+ if(error){console.error(error);return}
+ $('chat-history').innerHTML='';(data||[]).forEach(m=>{if(m.role!=='system')addChatBubble(m.role,m.content)});
+}
+async function sendChat(){
+ const message=$('chat-input').value.trim();if(!message)return;
+ $('chat-send').disabled=true;$('chat-msg').className='feedback info';$('chat-msg').textContent='یارا داره فکر می‌کنه...';
+ addChatBubble('user',message);$('chat-input').value='';
+ const {error:saveUserError}=await client.from('chat_messages').insert({user_id:currentUser.id,profile_id:profileId,role:'user',content:message});
+ if(saveUserError){$('chat-msg').className='feedback error';$('chat-msg').textContent='پیام ارسال نشد: '+saveUserError.message;$('chat-send').disabled=false;return}
+ const {data:history}=await client.from('chat_messages').select('role,content').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(12);
+ const profile={business_name:$('p-name').value,business_type:$('p-type').value,products_services:$('p-products').value,target_audience:$('p-audience').value,audience_desired_result:$('p-result').value,business_differentiator:$('p-diff').value,content_goal:$('p-goal').value,brand_voice:$('p-voice').value};
+ const {data,error}=await client.functions.invoke('yara-chat',{body:{message,history:(history||[]).reverse(),profile}});
+ if(error){$('chat-msg').className='feedback error';$('chat-msg').textContent='موتور هوش مصنوعی هنوز تنظیم نشده: '+(error.message||'');$('chat-send').disabled=false;return}
+ const answer=data?.reply||'پاسخی دریافت نشد.';addChatBubble('assistant',answer);
+ const {error:saveAssistantError}=await client.from('chat_messages').insert({user_id:currentUser.id,profile_id:profileId,role:'assistant',content:answer});
+ $('chat-msg').className=saveAssistantError?'feedback error':'feedback success';$('chat-msg').textContent=saveAssistantError?'پاسخ آماده شد، اما ذخیره گفتگو ناموفق بود.':'پاسخ یارا آماده و ذخیره شد ✓';$('chat-send').disabled=false;
+}
+$('chat-send').onclick=sendChat;
+$('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}});
+$('chat-clear').onclick=()=>{$('chat-history').innerHTML=''};
+
 client.auth.onAuthStateChange((_event,session)=>{boot(session)});
 client.auth.getSession().then(({data})=>boot(data.session));
 </script></body></html>
