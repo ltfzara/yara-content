@@ -67,6 +67,18 @@ textarea{min-height:94px;resize:vertical}
 .chat-status:before{content:"";width:7px;height:7px;border-radius:50%;background:#6b9a76}
 .chat-tools{padding:14px 25px;border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
 .chat-tools .prompt{font-size:11px;padding:7px 12px;border-radius:8px;font-weight:600}
+
+.chat-tools{padding:18px 25px;border-bottom:1px solid var(--line);display:block}
+.task-intro{margin:0 0 12px;color:#66736b;font-size:12px}
+.task-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.task-card{display:flex;align-items:flex-start;gap:11px;text-align:right;min-height:82px;padding:13px;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:13px;box-shadow:none;white-space:normal}
+.task-card:hover{background:#f5f8f5;border-color:#bfd1c2;color:var(--ink)}
+.task-icon{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:10px;background:var(--green-pale);font-size:17px}
+.task-copy{display:grid;gap:2px}
+.task-copy strong{font-size:12px;color:#34443a}
+.task-copy small{font-size:10px;line-height:1.6;color:var(--muted);font-weight:500}
+@media(max-width:760px){.chat-tools{padding:14px 15px}.task-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.task-card{min-height:78px;padding:10px;gap:8px}.task-icon{width:30px;height:30px;flex-basis:30px}}
+
 #chat-history{display:grid;gap:14px;margin:0!important;padding:22px 25px;min-height:210px;max-height:55vh;overflow-y:auto;background:#fafbf9}
 .chat-bubble{padding:13px 16px;border:1px solid var(--line);border-radius:15px;max-width:min(82%,680px);white-space:pre-wrap;line-height:2;box-shadow:0 2px 8px rgba(20,35,25,.025)}
 .chat-bubble.user{background:#edf3ee;border-color:#e0e9e1;justify-self:start;border-bottom-right-radius:5px}
@@ -119,7 +131,16 @@ textarea{min-height:94px;resize:vertical}
 <section id="page-chat" class="page">
 <div class="card chat-panel">
 <header class="chat-head"><div><span class="eyebrow">فضای کاری تو</span><h2>گفت‌وگو با یارا</h2><p class="muted">ایده‌پردازی، نوشتن و برنامه‌ریزی محتوای اینستاگرام؛ یارا در هر پیام از آخرین پروفایل ذخیره‌شده کسب‌وکارت استفاده می‌کنه.</p></div><span class="chat-status">دستیار آماده است</span></header>
-<div class="chat-tools"><button type="button" class="secondary prompt" data-prompt="برای پیج من ۵ ایده ریلز جذاب پیشنهاد بده.">۵ ایده ریلز</button><button type="button" class="secondary prompt" data-prompt="برای محصول یا خدمتم یک کپشن فروش طبیعی و جذاب بنویس.">نوشتن کپشن</button><button type="button" class="secondary prompt" data-prompt="برای این هفته یک برنامه محتوایی ساده و کاربردی پیشنهاد بده.">برنامه هفتگی</button></div>
+<div class="chat-tools">
+<p class="task-intro">برای شروع، یکی از این کارها رو انتخاب کن؛ یارا با شناختی که از کسب‌وکارت داره انجامش می‌ده.</p>
+<div class="task-grid">
+<button type="button" class="task-card prompt" data-prompt="برای پیج من چند ایده جذاب برای پست و ریلز پیشنهاد بده."><span class="task-icon">💡</span><span class="task-copy"><strong>ایده برای پست و ریلز</strong><small>دیگه نگران چی پست کنم نباش</small></span></button>
+<button type="button" class="task-card prompt" data-prompt="برای یکی از محصولات یا خدماتم یک سناریوی کامل ریلز آماده کن؛ از صحنه اول تا متن ویدیو و پایان."><span class="task-icon">🎬</span><span class="task-copy"><strong>سناریوی ریلز بساز</strong><small>از شروع ویدیو تا پایان</small></span></button>
+<button type="button" class="task-card prompt" data-prompt="برای محصول یا خدمتم یک کپشن جذاب و طبیعی بنویس که به فروش کمک کنه."><span class="task-icon">✍️</span><span class="task-copy"><strong>کپشن جذاب بنویس</strong><small>برای معرفی و فروش محصولم</small></span></button>
+<button type="button" class="task-card prompt" data-prompt="برای پیجم چند ایده استوری برای تعامل با مخاطب و معرفی محصولاتم پیشنهاد بده."><span class="task-icon">📱</span><span class="task-copy"><strong>ایده استوری بده</strong><small>برای تعامل و جذب مشتری</small></span></button>
+<button type="button" class="task-card prompt" data-prompt="با توجه به کسب‌وکارم چند راهکار عملی برای بیشتر کردن فروش از طریق اینستاگرام پیشنهاد بده."><span class="task-icon">🛍️</span><span class="task-copy"><strong>کمک کن بیشتر بفروشم</strong><small>راهکارهای متناسب با پیجم</small></span></button>
+<button type="button" class="task-card prompt" data-prompt="برای این هفته یک برنامه محتوایی ساده و قابل اجرا برای پیجم آماده کن."><span class="task-icon">🗓️</span><span class="task-copy"><strong>برنامه محتوایی هفتگی</strong><small>بدون سردرگمی برای هر روز</small></span></button>
+</div></div>
 <div id="chat-history"></div>
 <div class="chat-compose"><div class="field"><label for="chat-input">پیام جدید</label><textarea id="chat-input" placeholder="درباره کسب‌وکار یا محتوایی که می‌خواهی بسازی بنویس..."></textarea></div>
 <div class="row"><button id="chat-send">ارسال پیام</button><button class="secondary" id="chat-clear" type="button">پاک‌کردن نمایش گفتگو</button></div><p id="chat-msg" class="feedback"></p></div>
@@ -195,7 +216,7 @@ async function sendChat(){
  $('chat-msg').className=saveAssistantError?'feedback error':'feedback success';$('chat-msg').textContent=saveAssistantError?'پاسخ آماده شد، اما ذخیره گفتگو ناموفق بود.':'پاسخ یارا آماده و ذخیره شد ✓';$('chat-send').disabled=false;
 }
 $('chat-send').onclick=sendChat;
-document.querySelectorAll('.prompt').forEach(b=>b.addEventListener('click',()=>{$('chat-input').value=b.dataset.prompt;$('chat-input').focus()}));
+document.querySelectorAll('.prompt').forEach(b=>b.addEventListener('click',()=>{$('chat-input').value=b.dataset.prompt;sendChat()}));
 $('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}});
 $('chat-clear').onclick=()=>{$('chat-history').innerHTML=''};
 
